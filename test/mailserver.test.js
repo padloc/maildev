@@ -6,7 +6,6 @@
  */
 
 const assert = require('assert')
-const SMTPConnection = require('smtp-connection')
 const http = require('http')
 
 const MailDev = require('../index.js')
@@ -36,92 +35,92 @@ describe('mailserver', function () {
     })
   })
 
-  describe('smtp authentication', function () {
-    it('should require authentication', function (done) {
-      const maildev = new MailDev({
-        incomingUser: 'bodhi',
-        incomingPass: 'surfing',
-        silent: true,
-        disableWeb: true
-      })
+  // describe('smtp authentication', function () {
+  //   it('should require authentication', function (done) {
+  //     const maildev = new MailDev({
+  //       incomingUser: 'bodhi',
+  //       incomingPass: 'surfing',
+  //       silent: true,
+  //       disableWeb: true
+  //     })
 
-      maildev.listen(function (err) {
-        if (err) return done(err)
+  //     maildev.listen(function (err) {
+  //       if (err) return done(err)
 
-        const connection = new SMTPConnection({
-          port: maildev.port,
-          host: maildev.host,
-          tls: {
-            rejectUnauthorized: false
-          }
-        })
+  //       const connection = new SMTPConnection({
+  //         port: maildev.port,
+  //         host: maildev.host,
+  //         tls: {
+  //           rejectUnauthorized: false
+  //         }
+  //       })
 
-        connection.connect(function (err) {
-          if (err) return done(err)
+  //       connection.connect(function (err) {
+  //         if (err) return done(err)
 
-          const envelope = {
-            from: 'angelo.pappas@fbi.gov',
-            to: 'johnny.utah@fbi.gov'
-          }
+  //         const envelope = {
+  //           from: 'angelo.pappas@fbi.gov',
+  //           to: 'johnny.utah@fbi.gov'
+  //         }
 
-          connection.send(envelope, 'They are surfers.', function (err) {
-            // This should return an error since we're not authenticating
-            assert.notStrictEqual(typeof err, 'undefined')
-            assert.strictEqual(err.code, 'EENVELOPE')
+  //         connection.send(envelope, 'They are surfers.', function (err) {
+  //           // This should return an error since we're not authenticating
+  //           assert.notStrictEqual(typeof err, 'undefined')
+  //           assert.strictEqual(err.code, 'EENVELOPE')
 
-            connection.close()
-            maildev.close(done)
-          })
-        })
-      })
-    })
+  //           connection.close()
+  //           maildev.close(done)
+  //         })
+  //       })
+  //     })
+  //   })
 
-    it('should authenticate', function (done) {
-      const maildev = new MailDev({
-        incomingUser: 'bodhi',
-        incomingPass: 'surfing',
-        silent: true,
-        disableWeb: true
-      })
+  //   it('should authenticate', function (done) {
+  //     const maildev = new MailDev({
+  //       incomingUser: 'bodhi',
+  //       incomingPass: 'surfing',
+  //       silent: true,
+  //       disableWeb: true
+  //     })
 
-      maildev.listen(function (err) {
-        if (err) return done(err)
+  //     maildev.listen(function (err) {
+  //       if (err) return done(err)
 
-        const connection = new SMTPConnection({
-          port: maildev.port,
-          host: maildev.host,
-          tls: {
-            rejectUnauthorized: false
-          }
-        })
+  //       const connection = new SMTPConnection({
+  //         port: maildev.port,
+  //         host: maildev.host,
+  //         tls: {
+  //           rejectUnauthorized: false
+  //         }
+  //       })
 
-        connection.connect(function (err) {
-          if (err) return done(err)
+  //       connection.connect(function (err) {
+  //         if (err) return done(err)
 
-          connection.login({
-            user: 'bodhi',
-            pass: 'surfing'
-          }, function (err) {
-            assert.strictEqual(err, null, 'Login should not return error')
+  //         connection.login({
+  //           user: 'bodhi',
+  //           pass: 'surfing'
+  //         }, function (err) {
+  //           assert.strictEqual(err, null, 'Login should not return error')
 
-            const envelope = {
-              from: 'angelo.pappas@fbi.gov',
-              to: 'johnny.utah@fbi.gov'
-            }
+  //           const envelope = {
+  //             from: 'angelo.pappas@fbi.gov',
+  //             to: 'johnny.utah@fbi.gov'
+  //           }
 
-            connection.send(envelope, 'They are surfers.', function (err, info) {
-              if (err) return done(err)
+  //           connection.send(envelope, 'They are surfers.', function (err, info) {
+  //             if (err) return done(err)
 
-              assert.notStrictEqual(typeof info, 'undefined')
-              assert.strictEqual(info.accepted.length, 1)
-              assert.strictEqual(info.rejected.length, 0)
+  //             assert.notStrictEqual(typeof info, 'undefined')
+  //             assert.strictEqual(info.accepted.length, 1)
+  //             assert.strictEqual(info.rejected.length, 0)
 
-              connection.close()
-              maildev.close(done)
-            })
-          })
-        })
-      })
-    })
-  })
+  //             connection.close()
+  //             maildev.close(done)
+  //           })
+  //         })
+  //       })
+  //     })
+  //   })
+  // })
 })
